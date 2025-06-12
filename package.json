@@ -1,7 +1,7 @@
 {
-  "name": "@capacitor-community/http",
+  "name": "@manoj-capacitor-community/http",
   "version": "1.4.1",
-  "description": "A native HTTP plugin for CORS-free requests and file transfers",
+  "description": "updates to 'A native HTTP plugin for CORS-free requests and file transfers'",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -16,7 +16,7 @@
     "prepublishOnly": "npm run build && npm run ios:build",
     "prepare": "husky install"
   },
-  "author": "Max Lynch <max@ionic.io>, Thomas Vidas <thomas@ionic.io>",
+  "author": "Manoj M <manoj.m@jmrinfotech.com>",
   "license": "MIT",
   "dependencies": {
     "@capacitor/android": "^3.0.0",
@@ -63,9 +63,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/capacitor-community/http"
+    "url": "https://github.com/manojmula/capacitor-http-manoj"
   },
   "bugs": {
-    "url": "https://github.com/capacitor-community/http/issues"
+    "url": "https://github.com/manojmula/capacitor-http-manoj/issues"
   }
 }
