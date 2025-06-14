@@ -153,8 +153,15 @@ class HttpRequestHandler {
     public static func request(_ call: CAPPluginCall, _ httpMethod: String?) throws {
         guard let urlString = call.getString("url") else { throw URLError(.badURL) }
         guard let method = httpMethod ?? call.getString("method") else { throw URLError(.dataNotAllowed) }
-
-        let headers = (call.getObject("headers") ?? [:]) as! [String: String]
+        print("Headers: \(call.getObject("headers") ?? [:])")
+//        let headers = (call.getObject("headers") ?? [:]) as! [String: String]
+      // Handle headers conversion with complex objects
+        let headersObject = call.getObject("headers") ?? [:]
+        let headers = processHeaders(headersObject)
+              
+              // Debug print the processed headers
+            //   debugPrintProcessedHeaders(original: headersObject, processed: headers)
+      
         let params = (call.getObject("params") ?? [:]) as! [String: Any]
         let responseType = call.getString("responseType") ?? "text";
         let connectTimeout = call.getDouble("connectTimeout");
@@ -354,4 +361,98 @@ class HttpRequestHandler {
     }
 
     public typealias ProgressEmitter = (_ bytes: Int64, _ contentLength: Int64) -> Void;
+  
+  // Process headers to handle complex objects
+      public static func processHeaders(_ headersObject: JSObject) -> [String: String] {
+          var processedHeaders: [String: String] = [:]
+          
+          for (key, value) in headersObject {
+              let stringKey = String(key)
+              
+              // Convert value to string based on its type
+              let stringValue = convertValueToHeaderString(value)
+              
+              // Only add non-empty values
+              if !stringValue.isEmpty {
+                  processedHeaders[stringKey] = stringValue
+              } else {
+                  print("⚠️ Skipping header '\(key)' - could not convert to valid header string")
+              }
+          }
+          
+          return processedHeaders
+      }
+      
+      // Convert any value to a valid HTTP header string
+      public static func convertValueToHeaderString(_ value: Any) -> String {
+          switch value {
+          case let stringValue as String:
+              return stringValue
+              
+          case let numberValue as NSNumber:
+              return numberValue.stringValue
+              
+          case let boolValue as Bool:
+              return boolValue ? "true" : "false"
+              
+          case let arrayValue as [Any]:
+              // Convert array to JSON string
+              do {
+                  let jsonData = try JSONSerialization.data(withJSONObject: arrayValue)
+                  return String(data: jsonData, encoding: .utf8) ?? ""
+              } catch {
+                  print("Error serializing array header: \(error)")
+                  return ""
+              }
+              
+          case let dictValue as [String: Any]:
+              // Convert dictionary to JSON string
+              do {
+                  let jsonData = try JSONSerialization.data(withJSONObject: dictValue)
+                  return String(data: jsonData, encoding: .utf8) ?? ""
+              } catch {
+                  print("Error serializing dictionary header: \(error)")
+                  return ""
+              }
+              
+          case is NSNull:
+              // Skip null values
+              return ""
+              
+          default:
+              // Fallback to string description
+              let description = String(describing: value)
+              // Avoid setting "<null>" as a header value
+              return description == "<null>" ? "" : description
+          }
+      }
+      
+      // Debug function to show original vs processed headers
+      public static func debugPrintProcessedHeaders(original: JSObject, processed: [String: String]) {
+          print("\n=== HEADER PROCESSING DEBUG ===")
+          print("📥 Original headers count: \(original.count)")
+          print("📤 Processed headers count: \(processed.count)")
+          
+          print("\n🔄 Processing results:")
+          for (key, value) in original {
+              let valueType = type(of: value)
+              
+              if let processedValue = processed[key] {
+                  print("✅ \(key) (\(valueType))")
+                  print("   Original: \(value)")
+                  print("   Processed: \(processedValue)")
+              } else {
+                  print("❌ \(key) (\(valueType)) - SKIPPED")
+                  print("   Original: \(value)")
+                  print("   Reason: Could not convert to valid header string")
+              }
+              print("")
+          }
+          
+          print("📋 Final headers to be sent:")
+          for (key, value) in processed {
+              print("  \(key): \(value)")
+          }
+          print("=== END HEADER PROCESSING ===\n")
+      }
 }
