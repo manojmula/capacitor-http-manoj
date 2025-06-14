@@ -1,6 +1,6 @@
 {
   "name": "http-capacitor",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "updates to 'A native HTTP plugin for CORS-free requests and file transfers'",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -14,8 +14,7 @@
     "fmt": "npm run prettier -- --write",
     "prettier": "prettier \"**/*.{css,html,ts,js,java}\"",
     "prepublishOnly": "npm run build && npm run ios:build",
-    "prepare": "husky install",
-    "publish": "npm publish --access public"
+    "prepare": "husky install"
   },
   "author": "Manoj M <manoj.m@jmrinfotech.com>",
   "license": "MIT",
