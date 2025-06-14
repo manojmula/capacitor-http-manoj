@@ -1,6 +1,6 @@
 {
   "name": "http-capacitor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "updates to 'A native HTTP plugin for CORS-free requests and file transfers'",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -46,7 +46,7 @@
     "dist/",
     "ios/",
     "android/",
-    "CapacitorCommunityHttp.podspec"
+    "HttpCapacitor.podspec"
   ],
   "keywords": [
     "capacitor",
