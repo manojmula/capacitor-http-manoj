@@ -1,6 +1,6 @@
 {
-  "name": "@manoj-capacitor-community/http",
-  "version": "1.4.1",
+  "name": "http-capacitor",
+  "version": "1.0.0",
   "description": "updates to 'A native HTTP plugin for CORS-free requests and file transfers'",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
